@@ -3,7 +3,7 @@ project(main LANGUAGES CXX CUDA)
 
 find_package(v3 REQUIRED)
 
-add_executable(main main.cpp particle.cpp)
+add_executable(main particle.cpp main.cpp)
 set_source_files_properties(main.cpp particle.cpp PROPERTIES LANGUAGE CUDA)
 #set_target_properties(deviceLib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(main PRIVATE v3::v3)
