@@ -24,24 +24,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __v3_h__
-#define __v3_h__
+#include <stdlib.h>
+#include <stdio.h>
+#include <v3.h>
 
-class v3
+int main(int argc, char ** argv)
 {
-public:
-	float x;
-	float y;
-	float z;
-	
-	v3();
-	v3(float xIn, float yIn, float zIn);
-	void randomize();
-	__host__ __device__ void normalize();
-	__host__ __device__ void scramble();
+	int n = 1000000;
+	if(argc > 1)	{ n = atoi(argv[1]);}     // Number of particles
+	if(argc > 2)	{	srand(atoi(argv[2])); } // Random seed
 
-};
-
-void doVecScram(v3::v3* vArray_d, int n);
-
-#endif
+	v3 * vArray = new v3[n];
+	v3 * vArray_d = NULL;
+	cudaMalloc(&vArray_d, n*sizeof(v3));
+	cudaMemcpy(vArray_d, vArray, n*sizeof(v3), cudaMemcpyHostToDevice);
+        doVecScram(vArray_d,n);
+        cudaDeviceSynchronize();
+	cudaMemcpy(vArray, vArray_d, n*sizeof(v3), cudaMemcpyDeviceToHost);
+	v3 totalDistance(0,0,0);
+	v3 temp;
+	for(int i=0; i<n; i++)
+	{
+		temp = vArray[i];
+		totalDistance.x += temp.x;
+		totalDistance.y += temp.y;
+		totalDistance.z += temp.z;
+	}
+	float avgX = totalDistance.x /(float)n;
+	float avgY = totalDistance.y /(float)n;
+	float avgZ = totalDistance.z /(float)n;
+	float avgNorm = sqrt(avgX*avgX + avgY*avgY + avgZ*avgZ);
+	printf(	"%d particles random vecs. Average position is |(%f, %f, %f)| = %f\n", 
+					n, avgX, avgY, avgZ, avgNorm);
+	return 0;
+}

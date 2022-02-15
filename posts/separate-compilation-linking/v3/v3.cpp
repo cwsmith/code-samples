@@ -57,3 +57,17 @@ __host__ __device__ void v3::scramble()
 	y = ty;
 	z = tz;
 }
+
+__global__ void krnlVecScram(v3 * pArray, int nParticles)
+{
+  int idx = threadIdx.x + blockIdx.x*blockDim.x;
+  if(idx < nParticles)
+  {
+    pArray[idx].scramble();
+  }
+}
+
+void doVecScram(v3::v3* vArray_d, int n) {
+  krnlVecScram<<< 1 +  n/256, 256>>>(vArray_d, n);
+  cudaDeviceSynchronize();
+}
