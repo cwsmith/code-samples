@@ -78,3 +78,24 @@ gmake[1]: *** [CMakeFiles/mainNoDevCall.dir/all] Error 2
 gmake[1]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
 gmake: *** [all] Error 2
 ```
+
+This error appears to be explained in the `nvcc` docs here:
+
+https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#implicit-cuda-host-code
+
+| 6.6.3. Implicit CUDA Host Code
+| 
+| A file like b.cu above only contains CUDA device code, so one might think that
+| the b.o object doesn't need to be passed to the host linker. But actually there
+| is implicit host code generated whenever a device symbol can be accessed from
+| the host side, either via a launch or an API call like cudaGetSymbolAddress().
+| This implicit host code is put into b.o, and needs to be passed to the host
+| linker. Plus, for JIT linking to work all device code must be passed to the host
+| linker, else the host executable will not contain device code needed for the JIT
+| link. So a general rule is that the device linker and host linker must see the
+| same host object files (if the object files have any device references in
+| them—if a file is pure host then the device linker doesn't need to see it). If
+| an object file containing device code is not passed to the host linker, then you
+| will see an error message about the function __cudaRegisterLinkedBinary_name
+| calling an undefined or unresolved symbol __fatbinwrap_name.
+
