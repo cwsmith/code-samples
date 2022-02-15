@@ -11,5 +11,6 @@ target_include_directories(main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(mainNoDevCall mainNoDevCall.cpp)
 set_source_files_properties(mainNoDevCall.cpp PROPERTIES LANGUAGE CUDA)
+set_property(TARGET mainNoDevCall PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
 target_link_libraries(mainNoDevCall PRIVATE v3::v3)
 target_include_directories(mainNoDevCall PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
