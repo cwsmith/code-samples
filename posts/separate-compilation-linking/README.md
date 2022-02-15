@@ -56,3 +56,25 @@ gmake[2]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-sampl
 gmake[1]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
 /opt/scorec/cmake/3.20.0/bin/cmake -E cmake_progress_start /users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp/CMakeFiles 0
 ```
+
+The build of `mainNoDevCall.cpp` also fails with seperable compilation disabled despite the fact that it does not make any direct calls to device functions.
+
+```
+Consolidate compiler generated dependencies of target mainNoDevCall
+gmake[2]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+/usr/bin/gmake  -f CMakeFiles/mainNoDevCall.dir/build.make CMakeFiles/mainNoDevCall.dir/build
+gmake[2]: Entering directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+[ 20%] Building CUDA object CMakeFiles/mainNoDevCall.dir/mainNoDevCall.cpp.o
+/usr/local/cuda-10.2/bin/nvcc -forward-unknown-to-host-compiler  -I/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/app -isystem=/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildV3/install/include --generate-code=arch=compute_75,code=[compute_75,sm_75] -std=c++14 -MD -MT CMakeFiles/mainNoDevCall.dir/mainNoDevCall.cpp.o -MF CMakeFiles/mainNoDevCall.dir/mainNoDevCall.cpp.o.d -x cu -c /users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/app/mainNoDevCall.cpp -o CMakeFiles/mainNoDevCall.dir/mainNoDevCall.cpp.o
+[ 40%] Linking CUDA executable mainNoDevCall
+/opt/scorec/cmake/3.20.0/bin/cmake -E cmake_link_script CMakeFiles/mainNoDevCall.dir/link.txt --verbose=1
+/opt/scorec/spack/v0154_2/install/linux-rhel7-x86_64/gcc-6.5.0/gcc-7.4.0-75ljprtmtjoqfmlhrnbkrvlnsvhppv2y/bin/g++ CMakeFiles/mainNoDevCall.dir/mainNoDevCall.cpp.o -o mainNoDevCall  /users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildV3/install/lib64/libv3.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl  -L"/usr/local/cuda-10.2/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda-10.2/targets/x86_64-linux/lib"
+/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildV3/install/lib64/libv3.a(v3.cpp.o): In function `__sti____cudaRegisterAll()':
+tmpxft_000060ab_00000000-5_v3.cudafe1.cpp:(.text+0x60e): undefined reference to `__cudaRegisterLinkedBinary_37_tmpxft_000060ab_00000000_6_v3_cpp1_ii_ec982148'
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [mainNoDevCall] Error 1
+gmake[2]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+gmake[1]: *** [CMakeFiles/mainNoDevCall.dir/all] Error 2
+gmake[1]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+gmake: *** [all] Error 2
+```
