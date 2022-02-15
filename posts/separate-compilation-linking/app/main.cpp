@@ -28,12 +28,12 @@
 #include <stdio.h>
 #include <v3.h>
 
-__global__ void vecRand(v3 * pArray, int nParticles)
+__global__ void vecScram(v3 * pArray, int nParticles)
 {
 	int idx = threadIdx.x + blockIdx.x*blockDim.x;
 	if(idx < nParticles)
 	{
-		pArray[idx].randomize();
+		pArray[idx].scramble();
 	}
 }
 
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
 	cudaMemcpy(vArray_d, vArray, n*sizeof(v3), cudaMemcpyHostToDevice);
 	for(int i=0; i<100; i++)
 	{
-		vecRand<<< 1 +  n/256, 256>>>(vArray_d, n);
+		vecScram<<< 1 +  n/256, 256>>>(vArray_d, n);
 		cudaDeviceSynchronize();
 	}
 	cudaMemcpy(vArray, vArray_d, n*sizeof(v3), cudaMemcpyDeviceToHost);
