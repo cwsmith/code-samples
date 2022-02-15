@@ -25,8 +25,17 @@ cmake -S app -B buildApp -DCMAKE_CUDA_ARCHITECTURES=75
 cmake --build buildApp --verbose
 ```
 
-This fails with:
+the build fails with:
 
 ```
-ptxas fatal   : Unresolved extern function '_ZN8particle7advanceEf'
+[ 50%] Building CUDA object CMakeFiles/main.dir/main.cpp.o
+/usr/local/cuda-10.2/bin/nvcc -forward-unknown-to-host-compiler  -I/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/app -isystem=/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildV3/install/include --generate-code=arch=compute_75,code=[compute_75,sm_75] -std=c++14 -MD -MT CMakeFiles/main.dir/main.cpp.o -MF CMakeFiles/main.dir/main.cpp.o.d -x cu -c /users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/app/main.cpp -o CMakeFiles/main.dir/main.cpp.o
+ptxas fatal   : Unresolved extern function '_ZN2v38scrambleEv'
+gmake[2]: *** [CMakeFiles/main.dir/main.cpp.o] Error 255
+gmake[2]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+gmake[1]: *** [CMakeFiles/main.dir/all] Error 2
+gmake[1]: Leaving directory `/users/cwsmith/ThrowAwayCode/cudaLibrary/code-samples/posts/separate-compilation-linking/buildApp'
+gmake: *** [all] Error 2
 ```
+
+Why can't it find the `v3::scramble` function?
